@@ -1,7 +1,9 @@
 # samba - (servercontainers/samba) [x86 + arm]
 
 # Use these to gain access to root user files.
+
 chmod 777 -R .
+
 chmod 777 -R /usr/local/bin/server/drive1/media
 
 
