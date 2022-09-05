@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  samba:
+    build: .
+    container_name: samba
+    hostname: MediaFiles
+    image: servercontainers/samba
+    restart: always
+    network_mode: host
+    # uncomment to solve bug: https://github.com/ServerContainers/samba/issues/50 - wsdd2 only - not needed for samba
+    cap_add:
+      - CAP_NET_ADMIN
+    environment:
+      SAMBA_CONF_LOG_LEVEL: 3
+
+      # uncomment to disable optional services
+      #WSDD2_DISABLE: 1
+      AVAHI_DISABLE: 1
+
+      GROUP_admin: 1500
+
+      ACCOUNT_regix: <password>
+      UID_regix: 1000
+      GROUPS_regix: admin
+
+      # example for hashed password (user: foo | password: bar) - generated using create-hash.sh script.
+      #ACCOUNT_foo: "foo:1000:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:86C156FC198B358CCCF6278D8BD49B6A:[U          ]:LCT-61B0859A:"
+      #UID_foo: 1002
+      #GROUPS_foo: family
+
+      SAMBA_VOLUME_CONFIG_regixonly: "[Regix Share]; path=/shares/regix; valid users = regix; guest ok = no; read only = no; browseable = yes"
+    volumes:
+      # avoid loops when mounting folders to /shares (I'd recommend explicit mapping for each share)
+      - /usr/local/bin/server/drive1/media:/shares/regix
+
+
