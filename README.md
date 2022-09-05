@@ -8,7 +8,7 @@ chmod 777 -R /usr/local/bin/server/drive1/media
 
 
 
-samba on alpine
+#samba on alpine
 
 with timemachine, zeroconf (`avahi`) and WSD (Web Services for Devices) (`wsdd2`) support
 
