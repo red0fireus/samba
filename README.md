@@ -1,6 +1,6 @@
 # samba - (servercontainers/samba) [x86 + arm]
 
-# Use these to gain access to root user files.
+# Use these to gain access to root user files (Windows 10/11).
 
 chmod 777 -R .
 
