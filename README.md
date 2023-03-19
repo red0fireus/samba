@@ -1,4 +1,4 @@
-# samba - (servercontainers/samba) [x86 + arm]
+# samba - build yourself container
 
 # Use these to gain access to root user files (Windows 10/11).
 
@@ -10,36 +10,62 @@ chmod 777 -R /usr/local/bin/server/drive1/media
 
 # samba on alpine
 
-with timemachine, zeroconf (`avahi`) and WSD (Web Services for Devices) (`wsdd2`) support
+with timemachine, zeroconf (`avahi`) and WSD (Web Services for Devices) (`wsdd2`) support.
 
-## Versioning and Variants
+_currently tested on: x86_64, arm64, arm_
+
+## IMPORTANT!
+
+In March 2023 - Docker informed me that they are going to remove my 
+organizations `servercontainers` and `desktopcontainers` unless 
+I'm upgrading to a pro plan.
+
+I'm not going to do that. It's more of a professionally done hobby then a
+professional job I'm earning money with.
+
+In order to avoid bad actors taking over my org. names and publishing potenial
+backdoored containers, I'd recommend to switch over clone my github repos and
+build the containers yourself.
+
+## Build & Variants
+
+You can specify `DOCKER_REGISTRY` environment variable (for example `my.registry.tld`)
+and use the build script to build the main container and it's variants for _x86_64, arm64 and arm_
 
 You'll find all images tagged like `a3.15.0-s4.15.2` which means `a<alpine version>-s<samba version>`.
-This way you can pin your installation/configuration to a certian version. or easily roll back if you experience any problems
-(don't forget to open a issue in that case ;D).
+This way you can pin your installation/configuration to a certian version. or easily roll back if you experience any problems.
 
-The `latest` version will be updated/released after I managed to test a new pinned version in my production environment.
-This way I can easily find and fix bugs without affecting any users. It will result in a way more stable container.
+To build a `latest` tag run `./build.sh release`
 
-Other than that there are the following variants of this container:
 
-_all of those variants are automatically build and generated in one go_
+For builds without specified registry you can use the `generate-variants.sh` script to generate 
+variations of this container and build the repos yourself.
 
 - `latest` or `a<alpine version>-s<samba version>`
     - main version of this repo
     - includes everything (smbd, avahi, wsdd2)
     - not all services need to start/run -> use ENV variables to disable optional services
-- `smbd-only-latest` or `smbd-only-a<alpine version>-s<samba version>`
+
+the following variants are found after running the `generate-variants.sh` script beneath folder
+`/variants`
+
+- `smbd-only`
     - this will only include smbd and my scripts - no avahi, wsdd2 installed
-- `smbd-avahi-latest` or `smbd-avahi-a<alpine version>-s<samba version>`
+- `smbd-avahi`
     - this will only include smbd, my scripts and avahi
     - optional service can still be disabled using ENV variables
-- `smbd-wsdd2-latest` or `smbd-wsdd2-a<alpine version>-s<samba version>`
+- `smbd-wsdd2`
     - this will only include smbd, my scripts and wsdd2
     - optional service can still be disabled using ENV variables
 
 ## Changelogs
 
+* 2023-03-15
+    * switched from docker hub to a build-yourself container
+* 2023-02-06
+    * fixed capitalization of username while hashing - convert to lowercase
+* 2022-12-05
+    * fixed `SAMBA_GLOBAL_CONFIG_...` with colon in the key.
 * 2022-05-31
     * support for `server role` as ENV parameter
 * 2022-01-31
@@ -120,6 +146,8 @@ This is a Samba Server Container running on `_/alpine`.
     * example value: `key = value`
     * important if the SAMBA key contains a ` ` space replace it with `_SPACE_`
         * e.g. `foo_SPACE_bar`
+    * important if the SAMBA key contains a `:` space replace it with `_COLON_`
+        * e.g. `foo_COLON_bar`
 
 * __ACCOUNT\_username__
     * multiple variables/accounts possible
@@ -128,6 +156,7 @@ This is a Samba Server Container running on `_/alpine`.
         * to add a samba hash e.g. `user:1002:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:8846F7EAEE8FB117AD06BDD830B7586C:[U          ]:LCT-5FE1F7DF:` (user: `user` / password: `password`) add the line from `/var/lib/samba/private/smbpasswd`
         * create hash using this command `docker run -ti --rm --entrypoint create-hash.sh servercontainers/samba`
         * see `docker-compose.yml` user `foo` for an example how it's used/configured.
+        * the hashing script needs an all lowercase username - it will therefore automatically lowercase given username
     * to restrict access of volumes you can add the following to your samba volume config:
         * `valid users = alice; invalid users = bob;`
 

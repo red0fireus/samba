@@ -1,6 +1,9 @@
 #!/bin/sh -x
 
-IMG="servercontainers/samba"
+[ -z "$DOCKER_REGISTRY" ] && echo "error please specify docker-registry DOCKER_REGISTRY" && exit 1
+IMG="$DOCKER_REGISTRY/samba"
+
+sed -i.bak 's/image: /image: '"$DOCKER_REGISTRY"'\//g' docker-compose.yml; rm docker-compose.yml.bak
 
 PLATFORM="linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6"
 
@@ -71,3 +74,5 @@ sed -i.bak 's/:[l]atest/:smbd-wsdd2-latest/g' build.sh && rm build.sh.bak
 ./build.sh "variant" "$@"
 
 cd ../../
+
+git checkout docker-compose.yml

@@ -9,6 +9,25 @@ Welcome to the servercontainers/samba
 
 ################################################################################
 
+# IMPORTANT!
+
+In March 2023 - Docker informed me that they are going to remove my 
+organizations `servercontainers` and `desktopcontainers` unless 
+I'm upgrading to a pro plan.
+
+I'm not going to do that. It's more of a professionally done hobby then a
+professional job I'm earning money with.
+
+In order to avoid bad actors taking over my org. names and publishing potenial
+backdoored containers, I'd recommend to switch over clone my github repos and
+build the containers yourself.
+
+You'll find this container sourcecode here:
+
+    https://github.com/ServerContainers/samba
+
+The container repos will be updated regularly.
+
 EOF
 
 INITALIZED="/.initialized"
@@ -63,7 +82,7 @@ if [ ! -f "$INITALIZED" ]; then
 
   for I_CONF in $(env | grep '^SAMBA_GLOBAL_CONFIG_')
   do
-    CONF_KEY_VALUE=$(echo "$I_CONF" | sed 's/^SAMBA_GLOBAL_CONFIG_//g' | sed 's/=.*//g' | sed 's/_SPACE_/ /g')
+    CONF_KEY_VALUE=$(echo "$I_CONF" | sed 's/^SAMBA_GLOBAL_CONFIG_//g' | sed 's/=.*//g' | sed 's/_SPACE_/ /g' | sed 's/_COLON_/:/g')
     CONF_CONF_VALUE=$(echo "$I_CONF" | sed 's/^[^=]*=//g')
     echo ">> global config - adding: '$CONF_KEY_VALUE' = '$CONF_CONF_VALUE' to /etc/samba/smb.conf"
     echo '   '"$CONF_KEY_VALUE"' = '"$CONF_CONF_VALUE"  >> /etc/samba/smb.conf
